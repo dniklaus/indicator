@@ -43,6 +43,9 @@ public:
   virtual void notifyStatusChange(bool status) = 0;
   void attachIndicator(Indicator* indicator);
 
+protected:
+  Indicator* indicator();
+
 private:
   Indicator* m_indicator;
 
@@ -78,13 +81,16 @@ public:
   };
 
 public:
-  Indicator(const char* name, const char* description);
+  Indicator(const char* name, const char* description, unsigned long pulseTimeMillis = cDefaultPulseTimeMillis);
   virtual ~Indicator();
 
   void assignAdapter(AIndicatorAdapter* adapter);
   AIndicatorAdapter* adapter();
 
   DbgCli_Topic* dbgCliTopic();
+
+  SpinTimer* blinkTimer();
+  SpinTimer* pulseTimer();
 
   EIndState getState();
   static const char* getStateText(EIndState state);
@@ -96,13 +102,22 @@ public:
 
   bool status();
 
+  void startPulse(unsigned long pulseTimeMillis);
+  void startPulse();
+  void endOfPulse();
+
 private:
   AIndicatorAdapter*  m_adapter;
   SpinTimer*          m_blinkTimer;
+  SpinTimer* 		      m_pulseTimer;
   static const unsigned long c_blinkTimeMillis;
+  static const unsigned long cDefaultPulseTimeMillis;
   DbgCli_Topic*       m_dbgCliTopic;
-  DbgCli_Command*     m_cliCmd;
+  DbgCli_Command*     m_cliCmdIndSet;
+  DbgCli_Command* 	  m_cliCmdPulse;
   bool                m_indicatorBit;
+  Indicator& 		      m_indicator;
+
 
 private:  // forbidden default methods
   Indicator() = delete;

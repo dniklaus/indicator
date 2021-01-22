@@ -11,6 +11,7 @@
 #include <DbgCliCommand.h>
 #include "Indicator.h"
 #include "DbgCliCmdIndSet.h"
+#include "DbgCliCmdIndPulse.h"
 
 //-----------------------------------------------------------------------------
 
@@ -21,6 +22,11 @@ AIndicatorAdapter::AIndicatorAdapter()
 void AIndicatorAdapter::attachIndicator(Indicator* indicator)
 {
   m_indicator = indicator;
+}
+
+Indicator* AIndicatorAdapter::indicator()
+{
+  return m_indicator;
 }
 
 //-----------------------------------------------------------------------------
@@ -46,20 +52,43 @@ public:
 
 //-----------------------------------------------------------------------------
 
-const unsigned long Indicator::c_blinkTimeMillis = 500;
+class PulseTimerAction : public SpinTimerAction
+{
+private:
+  Indicator* m_indicator;
+public:
+  PulseTimerAction(Indicator* indicator)
+  : m_indicator(indicator)
+  { }
 
-Indicator::Indicator(const char* name, const char* description)
+  void timeExpired()
+  {
+    if (0 != m_indicator)
+    {
+      m_indicator->endOfPulse();
+    }
+  }
+};
+
+//-----------------------------------------------------------------------------
+
+const unsigned long Indicator::c_blinkTimeMillis = 500;
+const unsigned long Indicator::cDefaultPulseTimeMillis = 1000;
+
+Indicator::Indicator(const char* name, const char* description, unsigned long pulseTimeMillis /* = cDefaultPulseTimeMillis */)
 : m_adapter(0)
 , m_blinkTimer(new SpinTimer(c_blinkTimeMillis, new BlinkTimerAction(this), SpinTimer::IS_RECURRING, SpinTimer::IS_AUTOSTART))
+, m_pulseTimer(new SpinTimer(pulseTimeMillis, new PulseTimerAction(this), SpinTimer::IS_NON_RECURRING, SpinTimer::IS_NON_AUTOSTART))
 , m_dbgCliTopic(new DbgCli_Topic(DbgCli_Node::RootNode(), name, description))
-, m_cliCmd(new DbgCliCmd_IndSet(*this))
+, m_cliCmdIndSet(new DbgCliCmd_IndSet(*this))
+, m_cliCmdPulse(new DbgCliCmd_IndPulse(*this))
 , m_indicatorBit(false)
 { }
 
 Indicator::~Indicator()
 {
-  delete m_cliCmd;
-  m_cliCmd = 0;
+  delete m_cliCmdIndSet;
+  m_cliCmdIndSet = 0;
 
   delete m_dbgCliTopic;
   m_dbgCliTopic = 0;
@@ -89,6 +118,16 @@ AIndicatorAdapter* Indicator::adapter()
 DbgCli_Topic* Indicator::dbgCliTopic()
 {
   return m_dbgCliTopic;
+}
+
+SpinTimer* Indicator::blinkTimer()
+{
+  return m_blinkTimer;
+}
+
+SpinTimer* Indicator::pulseTimer()
+{
+  return m_pulseTimer;
 }
 
 void Indicator::toggle()
@@ -132,6 +171,29 @@ void Indicator::blink()
 bool Indicator::status()
 {
   return m_indicatorBit;
+}
+
+void Indicator::startPulse(unsigned long pulseTimeMillis)
+{
+    if (0 != m_pulseTimer)
+    {
+      m_pulseTimer->start(pulseTimeMillis);
+    }
+    set();
+}
+
+void Indicator::startPulse()
+{
+    if (0 != m_pulseTimer)
+    {
+      m_pulseTimer->start();
+    }
+    set();
+}
+
+void Indicator::endOfPulse()
+{
+    clear();
 }
 
 Indicator::EIndState Indicator::getState()
