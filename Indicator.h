@@ -116,8 +116,6 @@ private:
   DbgCli_Command*     m_cliCmdIndSet;
   DbgCli_Command* 	  m_cliCmdPulse;
   bool                m_indicatorBit;
-  Indicator& 		      m_indicator;
-
 
 private:  // forbidden default methods
   Indicator() = delete;
