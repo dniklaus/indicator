@@ -7,11 +7,11 @@
 
 #include <Arduino.h>
 #include <SpinTimer.h>
-#include <DbgCliTopic.h>
-#include <DbgCliCommand.h>
+// #include <DbgCliTopic.h>
+// #include <DbgCliCommand.h>
 #include "Indicator.h"
-#include "DbgCliCmdIndSet.h"
-#include "DbgCliCmdIndPulse.h"
+// #include "DbgCliCmdIndSet.h"
+// #include "DbgCliCmdIndPulse.h"
 
 //-----------------------------------------------------------------------------
 
@@ -79,19 +79,23 @@ Indicator::Indicator(const char* name, const char* description, unsigned long pu
 : m_adapter(0)
 , m_blinkTimer(new SpinTimer(c_blinkTimeMillis, new BlinkTimerAction(this), SpinTimer::IS_RECURRING, SpinTimer::IS_AUTOSTART))
 , m_pulseTimer(new SpinTimer(pulseTimeMillis, new PulseTimerAction(this), SpinTimer::IS_NON_RECURRING, SpinTimer::IS_NON_AUTOSTART))
-, m_dbgCliTopic(new DbgCli_Topic(DbgCli_Node::RootNode(), name, description))
-, m_cliCmdIndSet(new DbgCliCmd_IndSet(*this))
-, m_cliCmdPulse(new DbgCliCmd_IndPulse(*this))
+, m_nameSize(strlen(name)+1)
+, m_name(new char[m_nameSize])
+, m_descriptionSize(strlen(description)+1)
+, m_description(new char[m_descriptionSize])
+// , m_dbgCliTopic(new DbgCli_Topic(DbgCli_Node::RootNode(), name, description))
+// , m_cliCmdIndSet(new DbgCliCmd_IndSet(*this))
+// , m_cliCmdPulse(new DbgCliCmd_IndPulse(*this))
 , m_indicatorBit(false)
 { }
 
 Indicator::~Indicator()
 {
-  delete m_cliCmdIndSet;
-  m_cliCmdIndSet = 0;
+  // delete m_cliCmdIndSet;
+  // m_cliCmdIndSet = 0;
 
-  delete m_dbgCliTopic;
-  m_dbgCliTopic = 0;
+  // delete m_dbgCliTopic;
+  // m_dbgCliTopic = 0;
 
   delete m_blinkTimer->action();
   m_blinkTimer->attachAction(0);
@@ -115,9 +119,19 @@ AIndicatorAdapter* Indicator::adapter()
   return m_adapter;
 }
 
-DbgCli_Topic* Indicator::dbgCliTopic()
+// DbgCli_Topic* Indicator::dbgCliTopic()
+// {
+//   return m_dbgCliTopic;
+// }
+
+const char* Indicator::name() const
 {
-  return m_dbgCliTopic;
+  return m_name;
+}
+
+const char* Indicator::description() const
+{
+  return m_description;
 }
 
 SpinTimer* Indicator::blinkTimer()
