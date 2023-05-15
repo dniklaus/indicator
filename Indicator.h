@@ -57,8 +57,8 @@ private:  // forbidden default methods
 //-----------------------------------------------------------------------------
 
 class SpinTimer;
-class DbgCli_Topic;
-class DbgCli_Command;
+// class DbgCli_Topic;
+// class DbgCli_Command;
 
 
 /**
@@ -87,7 +87,10 @@ public:
   void assignAdapter(AIndicatorAdapter* adapter);
   AIndicatorAdapter* adapter();
 
-  DbgCli_Topic* dbgCliTopic();
+  // DbgCli_Topic* dbgCliTopic();
+  
+  const char* name() const;
+  const char* description() const;
 
   SpinTimer* blinkTimer();
   SpinTimer* pulseTimer();
@@ -108,13 +111,23 @@ public:
 
 private:
   AIndicatorAdapter*  m_adapter;
+ 
   SpinTimer*          m_blinkTimer;
   SpinTimer* 		      m_pulseTimer;
+ 
   static const unsigned long c_blinkTimeMillis;
   static const unsigned long cDefaultPulseTimeMillis;
-  DbgCli_Topic*       m_dbgCliTopic;
-  DbgCli_Command*     m_cliCmdIndSet;
-  DbgCli_Command* 	  m_cliCmdPulse;
+ 
+  const unsigned int m_nameSize;
+  const char* m_name;
+
+  const unsigned int m_descriptionSize;
+  const char* m_description;
+
+  // DbgCli_Topic*       m_dbgCliTopic;
+  // DbgCli_Command*     m_cliCmdIndSet;
+  // DbgCli_Command* 	  m_cliCmdPulse;
+ 
   bool                m_indicatorBit;
 
 private:  // forbidden default methods
