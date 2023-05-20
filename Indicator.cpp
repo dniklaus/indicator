@@ -5,7 +5,7 @@
  *      Author: nid
  */
 
-#include <Arduino.h>
+#include <cstring>
 #include <SpinTimer.h>
 #include "Indicator.h"
 
@@ -68,7 +68,7 @@ public:
 
 //-----------------------------------------------------------------------------
 
-const unsigned long Indicator::c_blinkTimeMillis = 500;
+const unsigned long Indicator::c_blinkTimeMillis = 100;
 const unsigned long Indicator::cDefaultPulseTimeMillis = 1000;
 
 Indicator::Indicator(const char* name, const char* description, unsigned long pulseTimeMillis /* = cDefaultPulseTimeMillis */)
