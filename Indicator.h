@@ -16,8 +16,12 @@ class Indicator;
  * Abstract Indicator Adapter.
  * Implement the notifyStatusChange(bool status) method to control any specific
  * output pin (or even a virtual object that might be "interested" in the status
- * of the indicator):
- *
+ * of the indicator).
+ * 
+ * Example: To control the built in LED on an Arduino, implement the notifyStatusChange() method as follows:
+ * @code{.cpp}
+ *       #include <Arduino.h>
+ * 
  *       class MyIndicatorAdapter : public AIndicatorAdapter
  *       {
  *         void notifyStatusChange(bool status)
@@ -25,13 +29,15 @@ class Indicator;
  *           digitalWrite(LED_BUILTIN, status);
  *         }
  *       }
- *
+ * @endcode
  *
  * In order to assign the adapter implementation to the indicator use
+ * @code{.cpp}
+ *       #include "MyIndicatorAdapter.h"
  *
  *       Indicator* myIndicator = new Indicator();
  *       myIndicator->assignAdapter(new MyIndicatorAdapter());
- *
+ * @endcode
  */
 class AIndicatorAdapter
 {
