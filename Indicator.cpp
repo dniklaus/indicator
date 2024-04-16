@@ -5,7 +5,7 @@
  *      Author: nid
  */
 
-#include <cstring>
+#include <string.h>
 #include <SpinTimer.h>
 #include "Indicator.h"
 
