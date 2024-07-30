@@ -43,6 +43,8 @@ class AIndicatorAdapter
 {
 protected:
   AIndicatorAdapter();
+
+public:
   virtual ~AIndicatorAdapter() { }
 
 public:
