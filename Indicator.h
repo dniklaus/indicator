@@ -8,6 +8,8 @@
 #ifndef LIB_INDICATOR_INDICATOR_H_
 #define LIB_INDICATOR_INDICATOR_H_
 
+#include <stdint.h>
+
 //-----------------------------------------------------------------------------
 
 class Indicator;
@@ -104,7 +106,7 @@ public:
   void toggle();
   void set();
   void clear();
-  void blink();
+  void blink(uint32_t blinkTimeMillis = c_blinkTimeMillis);
 
   bool status();
 

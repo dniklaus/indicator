@@ -158,11 +158,11 @@ void Indicator::clear()
   }
 }
 
-void Indicator::blink()
+void Indicator::blink(uint32_t blinkTimeMillis)
 {
   if (!m_blinkTimer->isRunning())
   {
-    m_blinkTimer->start();
+    m_blinkTimer->start(blinkTimeMillis);
     toggle();
   }
 }
